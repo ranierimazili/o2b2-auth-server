@@ -1,0 +1,19 @@
+node_modules
+.env
+
+#Keep track of README.md inside certs subfolders but ignore the other files
+certs/*
+!certs/sig
+!certs/enc
+!certs/host
+!certs/issuers
+certs/sig/*
+certs/enc/*
+certs/host/*
+certs/issuers/*
+!certs/sig/README.md
+!certs/enc/README.md
+!certs/host/README.md
+!certs/issuers/README.md
+!certs/issuers/README.md
+!certs/issuers/sandbox_issuers.pem

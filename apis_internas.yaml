@@ -1,0 +1,379 @@
+openapi: 3.0.3
+info:
+  title: o2b2 - API's internas
+  description: Documentação das API's internas do o2b2-auth-server que possibilitam a introspecção dos tokens emitidos, a busca de detalhes do cliente e da sessão e a aprovação ou rejeição do consentimento
+  version: 1.0.0
+paths:
+  /token/introspection:
+    post:
+      description: Retorna os detalhes do access para realização das validações se segurança, tais como, validar se o access_token está ativo, se foi emitido para o certificado utilizado na requisição, etc...
+      summary: Obtém os detalhes de um access_token.
+      security: 
+        - basicAuth: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        200:
+          description: Detalhes do access_token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntrospectionResponseSuccess'
+  /sessions/{session_id}:
+    get:
+      description: Retorna os dados sessão. Importante para casos onde o consent_id não foi enviado na URL ou para obter mais detalhes sobre a requisição do cliente.
+      summary: Obtém os dados da sessão
+      parameters:
+        - name: session_id
+          in: path
+          description: ID único da sessão
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Detalhes da sessão
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponseSuccess'
+  /clients/{client_id}:
+    get:
+      description: Retorna os dados do client utilizado para criação do access_token. Importante especialmente para requisições de Fase 3 (Pagamentos), pois o método retorna a jwks_uri, que é o endpoint onde constam os certificados de assinatura para validação do payload.
+      summary: Obtém os dados do client
+      parameters:
+        - name: client_id
+          in: path
+          description: ID único do cliente
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Detalhes do client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponseSuccess'
+  /approveConsent/{session_id}:
+    post:
+      summary: Realiza a aprovação do consentimento para retorno do code e id_token ao receptor
+      parameters:
+        - name: session_id
+          in: path
+          description: ID único da sessão
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveConsentRequest'
+      responses:
+        200:
+          description: URL para a qual o cliente deve ser redirecionado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveConsentResponseSuccess'
+  /rejectConsent/{session_id}:
+    post:
+      summary: Realiza a rejeição do consentimento para retorno do error e error description ao receptor
+      parameters:
+        - name: session_id
+          in: path
+          description: ID único da sessão
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectConsentRequest'
+      responses:
+        200:
+          description: URL para a qual o cliente deve ser redirecionado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RejectConsentResponseSuccess'      
+components:
+  schemas: 
+    IntrospectionResponseSuccess:
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Indicates whether the token is active.
+          example: true
+        client_id:
+          type: string
+          description: The client ID associated with the token.
+          example: "DusfPB5NHTxzIHv5tgIZ_"
+        exp:
+          type: integer
+          description: The expiration time of the token.
+          example: 1701699675
+        iat:
+          type: integer
+          description: The issued at time of the token.
+          example: 1701698775
+        iss:
+          type: string
+          description: The issuer of the token.
+          example: "https://as.localhost"
+        scope:
+          type: string
+          description: The scope of the token.
+          example: "payments"
+        cnf:
+          type: object
+          properties:
+            x5t#S256:
+              type: string
+              description: The thumbprint of the X.509 certificate.
+              example: "PcD9EodLhABseLslKxJ6pKCn0xUTNOOd1Q3Ax2ocw8g"
+          required:
+            - x5t#S256
+        token_type:
+          type: string
+          description: The type of the token.
+          example: "Bearer"
+    SessionResponseSuccess:
+      type: object
+      properties:
+        iat:
+          type: integer
+          description: Issued At time.
+          example: 1701282158
+        exp:
+          type: integer
+          description: Expiration time.
+          example: 1701285758
+        returnTo:
+          type: string
+          format: uri
+          description: URL to return to after processing.
+          example: "https://as.localhost/auth/ccdS0TF9W6_w8w0_QXy8-"
+        prompt:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the prompt.
+              example: "consent"
+            reasons:
+              type: array
+              description: Reasons for the prompt.
+              items:
+                type: string
+              example:
+                - "check_consent"
+            details:
+              type: object
+              description: Additional details for the prompt.
+              example: {}
+          required:
+            - name
+            - reasons
+        params:
+          type: object
+          properties:
+            client_id:
+              type: string
+              description: Client ID.
+              example: "kzC-5mYB_qm-QhFkohSKy"
+            code_challenge:
+              type: string
+              description: Code challenge.
+              example: "EGIhCfwBktgMBeQlb0wdaW86Qw9OjYLRg1WpHRGuaBE"
+            code_challenge_method:
+              type: string
+              description: Code challenge method.
+              example: "S256"
+            nonce:
+              type: string
+              description: Nonce value.
+              example: "45fbfc05fd19204a309b"
+            redirect_uri:
+              type: string
+              format: uri
+              description: Redirect URI.
+              example: "https://demo.certification.openid.net/test/a/o2b2/callback"
+            response_type:
+              type: string
+              description: Response type.
+              example: "code id_token"
+            scope:
+              type: string
+              description: Requested scopes.
+              example: "openid payments consent:urn:ranibank:C1DD33124"
+            state:
+              type: string
+              description: State value.
+              example: "07d1546f4b4d320bf4a3"
+          required:
+            - client_id
+            - code_challenge
+            - code_challenge_method
+            - nonce
+            - redirect_uri
+            - response_type
+            - scope
+            - state
+        cid:
+          type: string
+          description: Client ID.
+          example: "ePPjJfzr6Ja-n4c9k0uzL"
+        kind:
+          type: string
+          description: Type of interaction.
+          example: "Interaction"
+        jti:
+          type: string
+          description: JWT ID.
+          example: "ccdS0TF9W6_w8w0_QXy8-"
+    ClientResponseSuccess:
+      type: object
+      properties:
+        applicationType:
+          type: string
+          description: Type of the application.
+          example: web
+        grantTypes:
+          type: array
+          description: List of supported grant types.
+          items:
+            type: string
+          example:
+            - authorization_code
+            - implicit
+            - refresh_token
+            - client_credentials
+        idTokenSignedResponseAlg:
+          type: string
+          description: Algorithm used for signing the ID token.
+          example: PS256
+        requireAuthTime:
+          type: boolean
+          description: Whether authentication time is required.
+          example: false
+        responseTypes:
+          type: array
+          description: List of supported response types.
+          items:
+            type: string
+          example:
+            - code id_token
+        subjectType:
+          type: string
+          description: Subject type requested by the client.
+          example: public
+        tokenEndpointAuthMethod:
+          type: string
+          description: Token endpoint authentication method.
+          example: private_key_jwt
+        requireSignedRequestObject:
+          type: boolean
+          description: Whether the request object must be signed.
+          example: true
+        requirePushedAuthorizationRequests:
+          type: boolean
+          description: Whether pushed authorization requests are required.
+          example: true
+        idTokenEncryptedResponseAlg:
+          type: string
+          description: Algorithm used for encrypting the ID token.
+          example: RSA-OAEP
+        idTokenEncryptedResponseEnc:
+          type: string
+          description: Encryption algorithm used for the ID token.
+          example: A256GCM
+        tlsClientCertificateBoundAccessTokens:
+          type: boolean
+          description: Whether access tokens are bound to client certificates.
+          example: true
+        clientIdIssuedAt:
+          type: integer
+          description: Timestamp when the client ID was issued.
+          example: 1701698761
+        clientId:
+          type: string
+          description: Unique identifier for the client.
+          example: DusfPB5NHTxzIHv5tgIZ_
+        jwksUri:
+          type: string
+          format: uri
+          description: URI for the JSON Web Key Set (JWKS).
+          example: https://keystore.sandbox.directory.openbankingbrasil.org.br/8292c33e-d95a-5fe7-8f27-dd7a95c68b55/91630aa7-0537-486c-851c-39791314538a/application.jwks
+        redirectUris:
+          type: array
+          description: List of allowed redirect URIs.
+          items:
+            type: string
+          example:
+            - https://demo.certification.openid.net/test/a/o2b2/callback
+            - https://demo.certification.openid.net/test/a/o2b2/callback?dummy1=lorem&dummy2=ipsum
+        scope:
+          type: string
+          description: Scopes requested by the client.
+          example: openid payments
+        software_statement:
+          type: string
+          description: Statement containing information about the software.
+          example: "eyJraWQiOiJzaWduZXIiLCJ0eXAiOiJKV1QiLCJhbGciOiJQUzI1NiJ9.eyJzb2Z0d2FyZV9qd2tzX2luYWN0aXZlX3VyaSI6Imh0dHBzOi8va2V5c3RvcmUuc2FuZGJveC5kaXJlY3Rvcnkub3BlbmJhbmtpbmdicmFzaWwub3JnLmJyLzgyOTJjMzNlLWQ5NWEtNWZlNy04ZjI3LWRkN2E5NWM2OGI1NS85MTYzMGFhNy0wNTM3LTQ4NmMtODUxYy0zOTc5MTMxNDUzOGEvaW5hY3RpdmUvYXBwbGljYXRpb24uandrcyIsInNvZnR3YXJlX21vZGUiOiJMaXZlIiwic29mdHdhcmVfcmVkaXJlY3RfdXJpcyI"
+    ApproveConsentRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: Identificado único da conta que será retornado no id_token. Recomendado retornar um id genérico onde a detentora possa em momento futuro consultar este id para descobrir a conta que foi utilizada na transação.
+          example: "123456"
+        acr:
+          type: string
+          description: Nível de segurança utilizado na aprovação do consentimento.
+          example: "urn:brasil:openbanking:loa3"
+      required:
+        - accountId
+        - acr
+    ApproveConsentResponseSuccess:
+      type: object
+      properties:
+        redirectTo:
+          type: string
+          description: URL para qual o cliente deve ser redirecionado.
+          example: "https://as.localhost/auth/b-rccJJ77zf4tCeNIcJuS"
+    RejectConsentRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Tipo de erro
+          example: "access_denied"
+        error_description:
+          type: string
+          description: Detalhes do erro
+          example: "O cliente rejeitou o consentimento"
+      required:
+        - error
+    RejectConsentResponseSuccess:
+      type: object
+      properties:
+        redirectTo:
+          type: string
+          description: URL para qual o cliente deve ser redirecionado.
+          example: "https://as.localhost/auth/b-rccJJ77zf4tCeNIcJuS"
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "f8565845-9ce2-40a6-b6ed-529a1d6711a2",
+		"name": "o2b2-auth-server-dcr-tests",
+		"description": "Requisições para realização dos testes de DCR e DCM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "785792"
+	},
+	"item": [
+		{
+			"name": "DCR",
+			"item": [
+				{
+					"name": "Get well-known",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = JSON.parse(responseBody);",
+									"",
+									"//Salva em variáveis os endpoints que serão usados nas requisições seguintes",
+									"postman.setEnvironmentVariable(\"registration_endpoint\", jsonData.registration_endpoint);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{well_known_endpoint}}",
+							"host": [
+								"{{well_known_endpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Directory Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "directory:software",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{software_statement_id}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{directory_auth_host}}/token",
+							"host": [
+								"{{directory_auth_host}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Software Statement Assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"software_statement_assertion\", pm.response.text());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{directory_auth_host}}/organisations/{{org_id}}/softwarestatements/{{software_statement_id}}/assertion",
+							"host": [
+								"{{directory_auth_host}}"
+							],
+							"path": [
+								"organisations",
+								"{{org_id}}",
+								"softwarestatements",
+								"{{software_statement_id}}",
+								"assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DCR - Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"registration_access_token\", jsonData.registration_access_token);",
+									"postman.setEnvironmentVariable(\"registration_client_uri\", jsonData.registration_client_uri);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grant_types\": [\n    \"authorization_code\",\n    \"implicit\",\n    \"refresh_token\",\n    \"client_credentials\"\n  ],\n  \"jwks_uri\": \"{{directory_keystore_host}}/{{org_id}}/{{software_statement_id}}/application.jwks\",\n  \"token_endpoint_auth_method\": \"private_key_jwt\",\n  \"response_types\": [\n    \"code id_token\"\n  ],\n  \"redirect_uris\": [{{redirect_uris}}],\n  \"software_statement\": \"{{software_statement_assertion}}\",\n  \"id_token_signed_response_alg\": \"PS256\",\n  \"id_token_encrypted_response_alg\": \"RSA-OAEP\",\n  \"id_token_encrypted_response_enc\": \"A256GCM\",\n  \"tls_client_certificate_bound_access_tokens\": true,\n  \"scope\": \"openid payments\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{registration_endpoint}}",
+							"host": [
+								"{{registration_endpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DCR - Read",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"registration_response_body\", responseBody);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{registration_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{registration_client_uri}}",
+							"host": [
+								"{{registration_client_uri}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DCR - Edit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const registrationResponseBody = pm.environment.get(\"registration_response_body\");",
+									"let jsonData = JSON.parse(registrationResponseBody);",
+									"",
+									"//Remove os campos que não podem constar em um DCM",
+									"delete(jsonData.registration_access_token);",
+									"delete(jsonData.registration_client_uri);",
+									"delete(jsonData.client_id_issued_at);",
+									"",
+									"pm.environment.set(\"registration_response_body\", JSON.stringify(jsonData));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{registration_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{registration_response_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{registration_client_uri}}",
+							"host": [
+								"{{registration_client_uri}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DCR - Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{registration_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{registration_client_uri}}",
+							"host": [
+								"{{registration_client_uri}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
