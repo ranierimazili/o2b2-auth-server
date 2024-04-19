@@ -17,6 +17,8 @@ export const getCustomRouteName = function(ctx) {
         return 'importClient'
     else if (ctx.path.startsWith("/import/refreshTokens") && ["POST"].includes(ctx.request.method))
         return 'importRefreshTokens'
+    else if (ctx.path.startsWith("/healthcheck") && ["GET"].includes(ctx.request.method))
+        return 'healthcheck'
 
     return null;
 }
@@ -41,7 +43,16 @@ export const processCustomRouteCall = async function(ctx, provider, routeName) {
         case 'importRefreshTokens':
             await importRefreshTokens(ctx, provider);
             break;
+        case 'healthcheck':
+            await healthcheck(ctx, provider);
+            break;
     }
+}
+
+//Retorna os dados do cliente
+export const healthcheck = async function (ctx, provider) {
+      ctx.status = 200;
+      ctx.body = "I am alive";
 }
 
 //Retorna os dados do cliente
