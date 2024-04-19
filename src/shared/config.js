@@ -71,6 +71,7 @@ export const config = {
         ],
         CONTA: [ "openid" ],
         CCORR: [ "openid" ]
-    }
+    },
+    protocol: process.env.PROTOCOL
 }
 
