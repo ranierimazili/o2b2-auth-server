@@ -16,7 +16,7 @@ export const startHttpsServer = function(provider) {
     }, provider.callback());
     
     server.listen(config.port, () => {
-        console.log(`oidc-provider listening on port ${config.port}, check ${config.protocol}://${config.fqdn.noMtlsPrefix}.localhost:${config.port}/.well-known/openid-configuration`);
+        console.log(`oidc-provider listening on port ${config.port}, check ${config.protocol}://${config.fqdn.noMtlsPrefix ? config.fqdn.noMtlsPrefix + "." : "" }localhost:${config.port}/.well-known/openid-configuration`);
         process.on('SIGINT', () => {
           process.exit(0);
         });

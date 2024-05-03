@@ -49,7 +49,7 @@ export const processCustomRouteCall = async function(ctx, provider, routeName) {
     }
 }
 
-//Retorna os dados do cliente
+//Endpoint de healthcheck
 export const healthcheck = async function (ctx, provider) {
       ctx.status = 200;
       ctx.body = "I am alive";

@@ -20,18 +20,18 @@ const getOrganisationScopes = function() {
 }
 
 export const config = {
-    port: process.env.PORT,
-    env: process.env.NODE_ENV,
-    issuer: process.env.ISSUER,
+    port: process.env.PORT || 3000,
+    env: process.env.NODE_ENV || 'local',
+    issuer: process.env.ISSUER || `${process.env.PROTOCOL}://localhost`,
     directorySigningKeyUrl: process.env.NODE_ENV === "production" ? "https://keystore.directory.openbankingbrasil.org.br/openbanking.jwks" : "https://keystore.sandbox.directory.openbankingbrasil.org.br/openbanking.jwks",
     acr: process.env.ACR.split(","),
     scopes: getOrganisationScopes(),
     instrospection: {
-        user: process.env.INTROSPECTION_USER,
-        password: process.env.INTROSPECTION_PASS
+        user: process.env.INTROSPECTION_USER || 'admin',
+        password: process.env.INTROSPECTION_PASS || 'admin'
     },
     frontend: {
-        devModeEnabled: process.env.DEV_MOCK_FRONTEND === 'true',
+        devModeEnabled: process.env.DEV_MOCK_FRONTEND ? process.env.DEV_MOCK_FRONTEND === 'true' : 'true',
         redirectUrl: process.env.FRONTEND_REDIRECT_URL
     },
     fqdn: {
@@ -39,7 +39,7 @@ export const config = {
         mtlsPrefix: process.env.MTLS_FQDN_PREFIX
     },
     db: {
-        type: process.env.DATABASE_TYPE,
+        type: process.env.DATABASE_TYPE || 'memorydb',
         mongodb: {
             uri: process.env?.MONGODB_URI
         },
@@ -72,6 +72,6 @@ export const config = {
         CONTA: [ "openid" ],
         CCORR: [ "openid" ]
     },
-    protocol: process.env.PROTOCOL
+    protocol: process.env.PROTOCOL || 'https'
 }
 
