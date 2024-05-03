@@ -133,7 +133,7 @@ export const importClient = async function (ctx, provider) {
             await rat.save();
             
             ctx.status = 201;
-            ctx.body = client;
+            ctx.body = client.metadata();
         }
     } catch (e) {
         console.log(e)
