@@ -428,77 +428,72 @@ components:
           type: string
           example: "openid payments"
           description: "Escopos do cliente"
-        software_statement:
-          type: string
-          example: "eyJraWQiOiJ..."
-        registration_client_uri:
-          type: string
-          example: "https://mtls-as.localhost/reg/knquiZagzYrplBJiFgQFo"
         registration_access_token:
           type: string
           example: "xVJZRBSfyvwGPHqVOOqpNUY-IeBVzc2Q9tW50rnIi0S"
+        software_statement:
+          type: string
+          example: "eyJraWQiOiJ..."
       required:
         - client_id
         - jwks_uri
         - redirect_uris
         - scope
-        - software_statement
-        - registration_client_uri
         - registration_access_token
     ImportClientResponseSuccess:
       type: object
       properties:
-        applicationType:
+        application_type:
           type: string
           description: Type of application (e.g., web, mobile)
-        grantTypes:
+        grant_types:
           type: array
           items:
             type: string
           description: Allowed grant types
-        idTokenSignedResponseAlg:
+        id_token_signed_response_alg:
           type: string
           description: Algorithm used for signing ID token responses
-        requireAuthTime:
+        require_auth_time:
           type: boolean
           description: Whether to require authentication time
-        responseTypes:
+        response_types:
           type: array
           items:
             type: string
           description: Allowed response types
-        subjectType:
+        subject_type:
           type: string
           description: Type of subject (e.g., public, pairwise)
-        tokenEndpointAuthMethod:
+        token_endpoint_auth_method:
           type: string
           description: Token endpoint authentication method
-        requireSignedRequestObject:
+        require_signed_request_object:
           type: boolean
           description: Whether signed request objects are required
-        requirePushedAuthorizationRequests:
+        require_pushed_authorization_requests:
           type: boolean
           description: Whether pushed authorization requests are required
-        idTokenEncryptedResponseAlg:
+        id_token_encrypted_response_alg:
           type: string
           description: Algorithm used for encrypting ID token responses
-        idTokenEncryptedResponseEnc:
+        id_token_encrypted_response_enc:
           type: string
           description: Encryption algorithm used for ID token responses
-        tlsClientCertificateBoundAccessTokens:
+        tls_client_certificate_bound_access_tokens:
           type: boolean
           description: Whether TLS client certificate bound access tokens are required
-        clientIdIssuedAt:
+        client_id_issued_at:
           type: integer
           description: Timestamp when client ID was issued
-        clientId:
+        client_id:
           type: string
           description: Client ID
-        jwksUri:
+        jwks_uri:
           type: string
           format: uri
           description: URL for JWKS (JSON Web Key Set) URI
-        redirectUris:
+        redirect_uris:
           type: array
           items:
             type: string

@@ -14,7 +14,7 @@ Node >= 16
 - [Endpoints](docs/endpoints.md)
 - [Testando via Postman](docs/postman/README.md)
 - [Projetos Relacionados](docs/related_projects.md)
-- [TODO - Migrando de outros servidores]()
+- [Migrando de outros servidores](docs/migration_from_other_products.md)
 - [Tutoriais](docs/tutorials.md)
 
 # Testes da OpenID

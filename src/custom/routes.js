@@ -148,8 +148,6 @@ const checkRegistrationImportMandatoryAttributes = function(payload) {
         'jwks_uri',
         'redirect_uris',
         'scope',
-        'software_statement',
-        'registration_client_uri',
         'registration_access_token'
     ];
 
@@ -188,9 +186,11 @@ const buildClientPayload = function(payload) {
         jwks_uri: payload.jwks_uri,
         redirect_uris: payload.redirect_uris,
         scope: payload.scope,
-        software_statement: payload.software_statement,
-        registration_client_uri: payload.registration_client_uri,
         registration_access_token: payload.registration_access_token
+    }
+
+    if (payload.software_statement) {
+        finalPayload.software_statement = payload.software_statement;
     }
 
     if (payload?.webhook_uris) {
