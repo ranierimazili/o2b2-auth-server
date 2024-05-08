@@ -133,16 +133,9 @@ export const configuration = {
 		ClientCredentials: function(ctx, token, client) {
 			return 900;
 		},
-		//refresh_token com validade de 100 anos (em segundos)
-		/*
-		Obs: Os refresh_tokens no OFB não devem ter prazo de validade e também não podem estar com o prazo
-		associado ao prazo do consentimento, pois o prazo do consentimento pode ser extendido sem a necessidade
-		de emitir um novo refresh_token.
-		A solução é emitir um refresh_token com validade inalcançável e controlar o acesso no momento de acesso
-		ao recurso.
-		*/
+		//TODO: validar se todo refresh_token precisar ser colocado como undefined (sem prazo de validade)
 		RefreshToken: function(ctx, token, client) {
-			return 60 * 60 * 24 * 365 * 100;
+			return undefined;
 		}
 	},
 	issueRefreshToken: async function(ctx, client, code) {
