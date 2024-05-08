@@ -1,22 +1,7 @@
 import 'dotenv/config'
 
 const getOrganisationScopes = function() {
-    let scopes = ['openid','offline_access'];
-
-    if (process.env?.SCOPES_PAYMENTS) {
-        scopes = scopes.concat(process.env.SCOPES_PAYMENTS.split(","));
-    }
-    if (process.env?.SCOPES_MANDATORY_PHASE2) {
-        scopes = scopes.concat(process.env.SCOPES_MANDATORY_PHASE2.split(","));
-    }
-    if (process.env?.SCOPES_OPTIONAL_PHASE2_ACCOUNTS) {
-        scopes = scopes.concat(process.env.SCOPES_OPTIONAL_PHASE2_ACCOUNTS.split(","));
-    }
-    if (process.env?.SCOPES_OPTIONAL_PHASE2_CREDIT_CARDS) {
-        scopes = scopes.concat(process.env.SCOPES_OPTIONAL_PHASE2_CREDIT_CARDS.split(","));
-    }
-    
-    return scopes;
+    return ['openid','offline_access'].concat(process.env.SCOPES.split(","));
 }
 
 export const config = {
@@ -50,9 +35,12 @@ export const config = {
     },
     rolesAndScopes: {
         PAGTO: ["openid"
+                ,"offline_access"        
                 ,"payments"
+                ,"recurring-payments"
         ],
         DADOS: ["openid"
+                ,"offline_access"
                 ,"accounts"
                 ,"credit-cards-accounts"
                 ,"consents"
@@ -69,8 +57,8 @@ export const config = {
                 ,"treasure-titles"
                 ,"funds"
         ],
-        CONTA: [ "openid" ],
-        CCORR: [ "openid" ]
+        CONTA: [ "openid", "offline_access" ],
+        CCORR: [ "openid", "offline_access" ]
     },
     protocol: process.env.PROTOCOL || 'https'
 }

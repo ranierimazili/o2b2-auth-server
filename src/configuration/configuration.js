@@ -123,6 +123,8 @@ export const configuration = {
 		policy: customPolicy
     },
 	ttl: {
+		//5 minutos é o tempo limite para troca do authorization_code pelo refresh_token
+		AuthorizationCode: 300,
 		//access_token com validade de 15 minutos (máximo permitido pelo OFB)
 		AccessToken: function AccessTokenTTL(ctx, token, client) {
 			return 900;

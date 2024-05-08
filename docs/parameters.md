@@ -14,6 +14,7 @@
     - [ACR](#acr)
 
 - [Escopos](#escopos)
+    - [SCOPES]
     - [SCOPES_PAYMENTS](#scopes_payments)
     - [SCOPES_MANDATORY_PHASE2](#scopes_mandatory_phase2)
     - [SCOPES_OPTIONAL_PHASE2_ACCOUNTS](#scopes_optional_phase2_accounts)
@@ -129,63 +130,19 @@ urn:brasil:openbanking:loa2,urn:brasil:openbanking:loa3
 ```
 
 # Escopos
-No Open Finance Brasil as API's atualmente estão divididas em duas grandes categorias (Pagamento e Dados de Cliente). Cada categoria possui os escopos para proteção de seus endpoints
+No Open Finance Brasil as API's atualmente estão divididas em duas grandes categorias (Pagamento e Dados de Cliente). Cada categoria possui os escopos para proteção de seus endpoints. Você deve declarar todos os escopos que deseja oferecer na variável SCOPES.
 
-### SCOPES_PAYMENTS
-Escopos de pagamento
-* payments - Escopo utilizado pela API de Pagamento para pagamentos imediatos e agendados (não recorrentes)
-* recurring-payments - Escopo utilizado pela API de Pagamento para pagamentos recorrentes (Transferências Inteligentes, Pix Automático)
+> **Atenção:** Nem todas as instituições precisam oferecer todos os escopos. Esteja atento ao papel regulatório que sua instituição precisa atender para oferecer os escopos corretos.
 
-Em caso de utilização de mais de um valor, eles devem estar separados por vírgula
+### SCOPES
+Lista de escopos disponibilizados (separados por vírgula)
 
 **Valor padrão:**
 ```
-payments,recurring-payments
+payments,recurring-payments,consents,resources,invoice-financings,financings,loans,unarranged-accounts-overdraft,bank-fixed-incomes,credit-fixed-incomes,variable-incomes,treasure-titles,funds,exchanges,customers,accounts,credit-cards-accounts
 ```
 
-### SCOPES_MANDATORY_PHASE2
-Escopos obrigatórios de Dados de Cliente
-
-* consents - Escopo utilizado pela API de Consentimento
-* resources - Escopo utilizado pela API de Recursos
-* customers - Escopo utilizado pela API de Dados Cadastrais
-* invoice-financings - Escopo utilizado pela API de Operações de Crédito - Direitos Creditórios Descontados
-* financings - Escopo utilizado pela API de Operações de Crédito - Financiamento
-* loans - Escopo utilizado pela API de Operações de Crédito - Empréstimos
-* unarranged-accounts-overdraft - Escopo utilizado pela API de Operações de Crédito - Adiamento a Depositantes
-* bank-fixed-incomes - Escopo utilizado pela API de Investimentos - Renda Fixa Bancária
-* credit-fixed-incomes - Escopo utilizado pela API de Investimentos - Renda Fixa Crédito
-* variable-incomes - Escopo utilizado pela API de Investimentos - Renda Variável
-* treasure-titles - Escopo utilizado pela API de Investimentos - Títulos do Tesouro Direto
-* funds - Escopo utilizado pela API de Investimentos - Fundos de Investimento
-* exchanges - Escopo utilizado pela API de Câmbio
-
-Em caso de utilização de mais de um valor, eles devem estar separados por vírgula
-
-**Valor padrão:**
-```
-consents,resources,invoice-financings,financings,loans,unarranged-accounts-overdraft,bank-fixed-incomes,credit-fixed-incomes,variable-incomes,treasure-titles,funds,exchanges,customers
-```
-
-### SCOPES_OPTIONAL_PHASE2_ACCOUNTS
-Escopo de contas
-
-* accounts - Escopo utilizado pela API de Contas
-
-**Valor padrão:**
-```
-accounts
-```
-
-### SCOPES_OPTIONAL_PHASE2_CREDIT_CARDS
-Escopo de cartão de crédito
-
-* accounts - Escopo utilizado pela API de Cartão de Crédito
-
-**Valor padrão:**
-```
-credit-cards-accounts
-```
+> **Atenção:** Além dos escopos informados na variável SCOPES, os escopos _openid_ e _offline_access_ são automaticamente incluídos
 
 # Introspecção de tokens
 Usuário e senha utilizado para realizar a introspecção de tokens
