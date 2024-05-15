@@ -14,12 +14,8 @@
     - [ACR](#acr)
 
 - [Escopos](#escopos)
-    - [SCOPES]
-    - [SCOPES_PAYMENTS](#scopes_payments)
-    - [SCOPES_MANDATORY_PHASE2](#scopes_mandatory_phase2)
-    - [SCOPES_OPTIONAL_PHASE2_ACCOUNTS](#scopes_optional_phase2_accounts)
-    - [SCOPES_OPTIONAL_PHASE2_CREDIT_CARDS](#scopes_optional_phase2_credit_cards)
-
+    - [SCOPES](#scopes)
+      
 - [Introspecção de tokens](#introspecção-de-tokens)
     - [INTROSPECTION_USER](#introspection_user)
     - [INTROSPECTION_PASS](#introspection_pass)
