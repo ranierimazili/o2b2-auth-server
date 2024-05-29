@@ -84,3 +84,8 @@ const fetchWithoutSSLCheck = async function(url) {
 
     return res;
 }
+
+export const savePidToFile = function() {
+    const pid = process.pid;
+    fs.writeFileSync('./pid', pid.toString(), 'utf8');
+}

@@ -8,6 +8,10 @@ import { getCustomRouteName, processCustomRouteCall } from './custom/routes.js';
 import { getDBAdapter } from './persistence/db.js';
 import { addDynamicScopesSupport } from './custom/dynamicScopes.js';
 import { startServer } from './server/server.js';
+import * as utils from './shared/utils.js';
+
+//Salva o PID do processo em arquivo
+utils.savePidToFile();
 
 //Inicialização do banco de dados escolhido
 let dbAdapter = await getDBAdapter();

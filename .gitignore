@@ -1,5 +1,6 @@
 node_modules
 .env
+pid
 
 #Keep track of README.md inside certs subfolders but ignore the other files
 certs/*
